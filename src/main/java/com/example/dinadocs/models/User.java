@@ -2,7 +2,6 @@ package com.example.dinadocs.models;
 
 // Importación correcta para Spring Boot 3+
 import jakarta.persistence.*;
-import java.util.List;
 
 /**
  * Entidad JPA (Modelo) que representa la tabla 'usuarios'.
@@ -16,8 +15,11 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
+    private String name;
+
     @Column(unique = true, nullable = false)
-    private String username;
+    private String email;
 
     @Column(nullable = false)
     private String password;
@@ -25,9 +27,6 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
-
-    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Template> templates;
 
     // --- Constructores, Getters y Setters ---
 
@@ -39,11 +38,17 @@ public class User {
     public void setId(Long id) {
         this.id = id;
     }
-    public String getUsername() {
-        return username;
+    public String getName() {
+        return name;
     }
-    public void setUsername(String username) {
-        this.username = username;
+    public void setName(String name) {
+        this.name = name;
+    }
+    public String getEmail() {
+        return email;
+    }
+    public void setEmail(String email) {
+        this.email = email;
     }
     public String getPassword() {
         return password;
@@ -56,11 +61,5 @@ public class User {
     }
     public void setRole(Role role) {
         this.role = role;
-    }
-    public List<Template> getTemplates() {
-        return templates;
-    }
-    public void setTemplates(List<Template> templates) {
-        this.templates = templates;
     }
 }

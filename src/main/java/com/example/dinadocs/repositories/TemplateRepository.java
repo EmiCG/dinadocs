@@ -27,4 +27,10 @@ public interface TemplateRepository extends JpaRepository<Template, Long> {
      *
      */
     List<Template> findByIsPublicTrueOrOwner(User user);
+
+    /**
+     * Busca solo las plantillas que son públicas.
+     * (metodo TEMPORAL para probar plantillas sin iniciar sesion con un usuario valido)
+     */
+    List<Template> findByIsPublicTrue();
 }

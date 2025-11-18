@@ -1,27 +1,54 @@
 package com.example.dinadocs.services;
 
-import java.util.Map;
+import com.example.dinadocs.models.GenerationRequest;
+import com.example.dinadocs.models.Template;
+import com.example.dinadocs.repositories.TemplateRepository;
 import org.springframework.stereotype.Service;
-import com.example.dinadocs.models.GenerationRequest; 
-
 
 import java.io.ByteArrayOutputStream;
 import org.jsoup.nodes.Document;
 import org.jsoup.Jsoup;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 
-// TODO: Documentar con JavaDoc
+import java.io.IOException;
+import java.util.Map;
+import java.util.NoSuchElementException;
 
+/**
+ * Servicio (capa de lógica de negocio) para el módulo de generación de PDFs.
+ *
+ * @see com.example.dinadocs.controllers.PdfController
+ * @see com.example.dinadocs.models.GenerationRequest
+ */
 @Service
 public class PdfGenerationService {
+
+    private final TemplateRepository templateRepository;
+
+    /**
+     * Constructor para inyección de dependencias.
+     * @param templateRepository Repositorio para acceder a las plantillas en la BD.
+     */
+    public PdfGenerationService(TemplateRepository templateRepository) {
+        this.templateRepository = templateRepository;
+    }
    
+    /**
+     * Funcion orquestadora del proceso completo de generación de PDF.
+     *
+     * @param request El DTO (GenerationRequest) con el tipo de plantilla y los datos.
+     * @return Un array de bytes (byte[]) que representa el archivo PDF generado.
+     * @throws IllegalArgumentException Si la validación de datos falla.
+     * @throws NoSuchElementException Si el 'templateType' no se encuentra en la BD.
+     * @throws RuntimeException Si la conversión de PDF falla.
+     */
     public byte[] generatePdf(GenerationRequest request) {
         
         validateData(request);
 
         String templateType = request.getTemplateType();
-        String htmlTemplate = loadTemplateByType(templateType);
-
+        Template template = loadTemplateByType(templateType);
+        String htmlTemplate = template.getContent();
         Map<String, Object> data = request.getData();
 
         String htmlFusionado = fuse(htmlTemplate, data);
@@ -31,6 +58,11 @@ public class PdfGenerationService {
         return pdfBytes;
     }
 
+    /**
+     * Valida la solicitud de entrada.
+     * @param request El DTO de la solicitud.
+     * @throws IllegalArgumentException Si 'data' o 'templateType' son nulos o vacíos.
+     */
     private void validateData(GenerationRequest request) {
         Map<String, Object> data = request.getData();
 
@@ -42,38 +74,25 @@ public class PdfGenerationService {
         }
     }
 
-    // Metodo temporal para probar plantillas 
-    // pero todas las plantillas deben provenir 
-    // de la base de datos en un futuro
-    //
-    // TODO: Implementar carga de plantillas desde BD
-    // (ya se, Mala practica poner el "TODO" XD)
-
-    private String loadTemplateByType(String templateType) {
-        
-        if ("Factura".equalsIgnoreCase(templateType)) {
-            return "<html>"
-                 + "<body>"
-                 + "<h1>Factura Nro: {{numero_factura}}</h1>"
-                 + "<p>Cliente: <strong>{{nombre_cliente}}</strong></p>"
-                 + "<p>Monto Total: <strong>${{monto_total}}</strong></p>"
-                 + "</body>"
-                 + "</html>";
-        }
-        
-        if ("Certificado".equalsIgnoreCase(templateType)) {
-            return "<html>"
-                 + "<body style='text-align: center; border: 1px solid black; padding: 20px;'>"
-                 + "<h1>Certificado de Finalización</h1>"
-                 + "<p>Otorgado a: <h2>{{nombre_galardonado}}</h2></p>"
-                 + "<p>Por completar el curso: <strong>{{nombre_curso}}</strong></p>"
-                 + "</body>"
-                 + "</html>";
-        }
-
-        throw new IllegalArgumentException("El templateType '" + templateType + "' no es válido o no existe.");
+    /**
+     * Carga la entidad Template desde la base de datos usando el 'templateType'.
+     * @param templateType El nombre (identificador) de la plantilla.
+     * @return La entidad Template.
+     * @throws NoSuchElementException Si no se encuentra una plantilla con ese nombre.
+     */
+    private Template loadTemplateByType(String templateType) {
+        return templateRepository.findByName(templateType)
+                .orElseThrow(() -> new NoSuchElementException("La plantilla '" + templateType + "' no existe."));
     }
 
+    /**
+     * Lógica de Fusión: Reemplaza los placeholders (ej. {{key}}) en el HTML 
+     * con los valores del mapa 'data'.
+     *
+     * @param htmlTemplate El HTML de la plantilla (con {{placeholders}}).
+     * @param data Los valores del usuario.
+     * @return El HTML fusionado.
+     */
     private String fuse(String htmlTemplate, Map<String, Object> data) {
         String fusedHtml = htmlTemplate;
 
@@ -90,6 +109,14 @@ public class PdfGenerationService {
         return fusedHtml;
     }
 
+    /**
+     * RNF-03: Convierte una cadena de HTML/CSS en un array de bytes (PDF)
+     * usando Jsoup y Flying Saucer (ITextRenderer).
+     *
+     * @param htmlContent El string de HTML/CSS ya fusionado.
+     * @return El archivo PDF como un array de bytes.
+     * @throws RuntimeException Si la conversión falla.
+     */
     private byte[] convertHtmlToPdf(String htmlContent) {
         try {
             Document document = Jsoup.parse(htmlContent);

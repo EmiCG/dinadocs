@@ -6,9 +6,13 @@ import com.example.dinadocs.models.Role;
 import com.example.dinadocs.repositories.TemplateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.nio.file.AccessDeniedException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Servicio (Lógica de Negocio) para gestionar las Plantillas.
@@ -34,6 +38,9 @@ public class TemplateService {
             template.setPublic(false);
             template.setOwner(authUser);
         }
+
+        List<String> placeholders = extractPlaceholders(template.getContent());
+        template.setPlaceholders(placeholders);
         return templateRepository.save(template);
     }
 
@@ -43,6 +50,11 @@ public class TemplateService {
      *
      */
     public List<Template> findAllByRole(User authUser) {
+        // Validacion TEMPORAL para probar sin usuario
+        if (authUser == null){
+            return templateRepository.findByIsPublicTrue();
+        }
+        // Fin de la logica TEMPORAL
         if (authUser.getRole() == Role.ADMIN) {
             return templateRepository.findAll();
         }
@@ -118,5 +130,19 @@ public class TemplateService {
         }
 
         templateRepository.delete(templateToDelete);
+    }
+
+    /**
+     * Método privado que usa Regex para encontrar todos los {{placeholders}}.
+     */
+    private List<String> extractPlaceholders(String htmlContent) {
+        List<String> matches = new ArrayList<>();
+        Pattern pattern = Pattern.compile("\\{\\{([^\\}]+)\\}\\}");
+        Matcher matcher = pattern.matcher(htmlContent);
+
+        while (matcher.find()) {
+            matches.add(matcher.group(1));
+        }
+        return matches;
     }
 }
