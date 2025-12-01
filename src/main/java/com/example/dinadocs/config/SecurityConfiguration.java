@@ -29,9 +29,10 @@ public class SecurityConfiguration {
             .csrf(csrf -> csrf.disable()) 
             .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) 
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/h2-console/**").permitAll() 
                 .requestMatchers("/api/auth/**").permitAll() 
                 .requestMatchers("/error").permitAll()
+                .requestMatchers("/actuator/**").permitAll()
+                .requestMatchers("/swagger-ui.html", "/v3/api-docs/**", "/swagger-ui/**").permitAll()
                 .anyRequest().authenticated() 
             )
             .headers(headers -> headers.frameOptions(frame -> frame.disable())) 

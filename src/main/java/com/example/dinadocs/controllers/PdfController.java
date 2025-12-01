@@ -16,9 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.dinadocs.services.PdfGenerationService;
 import com.example.dinadocs.models.GenerationRequest;
 
-import org.springframework.web.bind.annotation.GetMapping;
-// import org.springframework.web.bind.annotation.RequestParam;
-
 /**
  * Controlador REST para manejar peticiones de generación de PDF.
  *
@@ -43,9 +40,8 @@ public class PdfController {
      */
     @PostMapping("/generatePDF")
     public ResponseEntity<?> generateDocument(@RequestBody GenerationRequest request) {
-
         try {
-
+            // Generate the PDF using the service
             byte[] pdfBytes = pdfService.generatePdf(request);
 
             HttpHeaders headers = new HttpHeaders();
@@ -58,11 +54,10 @@ public class PdfController {
 
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(e.getMessage().getBytes(), HttpStatus.BAD_REQUEST);
-        
+
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
     }
     
 }

@@ -10,9 +10,9 @@ import org.jsoup.nodes.Document;
 import org.jsoup.Jsoup;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 
-import java.io.IOException;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.List;
 
 /**
  * Servicio (capa de lógica de negocio) para el módulo de generación de PDFs.
@@ -24,13 +24,16 @@ import java.util.NoSuchElementException;
 public class PdfGenerationService {
 
     private final TemplateRepository templateRepository;
+    private final TemplateProcessor templateProcessor;
 
     /**
      * Constructor para inyección de dependencias.
      * @param templateRepository Repositorio para acceder a las plantillas en la BD.
+     * @param templateProcessor Procesador de plantillas para la fusión de datos.
      */
-    public PdfGenerationService(TemplateRepository templateRepository) {
+    public PdfGenerationService(TemplateRepository templateRepository, TemplateProcessor templateProcessor) {
         this.templateRepository = templateRepository;
+        this.templateProcessor = templateProcessor;
     }
    
     /**
@@ -48,12 +51,14 @@ public class PdfGenerationService {
 
         String templateType = request.getTemplateType();
         Template template = loadTemplateByType(templateType);
-        String htmlTemplate = template.getContent();
         Map<String, Object> data = request.getData();
 
-        String htmlFusionado = fuse(htmlTemplate, data);
+        validatePlaceholders(template, data);
 
-        byte[] pdfBytes = convertHtmlToPdf(htmlFusionado);
+        // Procesar la plantilla dinámicamente usando TemplateProcessor
+        String processedTemplate = templateProcessor.processTemplate(template.getContent(), data);
+
+        byte[] pdfBytes = convertHtmlToPdf(processedTemplate);
         
         return pdfBytes;
     }
@@ -80,38 +85,54 @@ public class PdfGenerationService {
      * @return La entidad Template.
      * @throws NoSuchElementException Si no se encuentra una plantilla con ese nombre.
      */
-    private Template loadTemplateByType(String templateType) {
+    public Template loadTemplateByType(String templateType) {
         return templateRepository.findByName(templateType)
                 .orElseThrow(() -> new NoSuchElementException("La plantilla '" + templateType + "' no existe."));
     }
 
     /**
-     * Lógica de Fusión: Reemplaza los placeholders (ej. {{key}}) en el HTML 
-     * con los valores del mapa 'data'.
+     * Valida que todos los marcadores de posición (placeholders) requeridos por la plantilla
+     * estén presentes en los datos proporcionados.
      *
-     * @param htmlTemplate El HTML de la plantilla (con {{placeholders}}).
-     * @param data Los valores del usuario.
-     * @return El HTML fusionado.
+     * @param template La plantilla que contiene los placeholders requeridos.
+     * @param data Los datos proporcionados por el usuario.
+     * @throws IllegalArgumentException Si falta algún placeholder requerido.
      */
-    private String fuse(String htmlTemplate, Map<String, Object> data) {
-        String fusedHtml = htmlTemplate;
+    private void validatePlaceholders(Template template, Map<String, Object> data) {
+        for (String placeholder : template.getPlaceholders()) {
+            String normalizedPlaceholder = placeholder.replace("#", "");
 
-        for (Map.Entry<String, Object> entry : data.entrySet()) {
-            String key = entry.getKey();
-            String value = entry.getValue() != null ? entry.getValue().toString() : "";
-            String placeholder = "{{" + key + "}}";
-            
-            fusedHtml = fusedHtml.replace(placeholder, value);
+            if (!data.containsKey(normalizedPlaceholder)) {
+                System.out.println("Advertencia: Falta el dato para el marcador de posición opcional: " + placeholder);
+                continue;
+            }
+
+            Object value = data.get(normalizedPlaceholder);
+            if (value == null) {
+                System.out.println("Advertencia: El valor para el marcador de posición opcional '" + placeholder + "' es nulo.");
+                continue;
+            }
+
+            if (value instanceof List) {
+                List<?> list = (List<?>) value;
+                for (Object item : list) {
+                    if (item instanceof Map) {
+                        Map<?, ?> itemMap = (Map<?, ?>) item;
+                        for (String subPlaceholder : template.getPlaceholders()) {
+                            if (subPlaceholder.startsWith(normalizedPlaceholder + ".")) {
+                                String subKey = subPlaceholder.replace(normalizedPlaceholder + ".", "");
+                                if (!itemMap.containsKey(subKey)) {
+                                    System.out.println("Advertencia: Falta el dato para el marcador de posición opcional: " + subPlaceholder);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
-        
-        fusedHtml = fusedHtml.replaceAll("\\{\\{.*?\\}\\}", "[DATO NO PROPORCIONADO]");
-
-        return fusedHtml;
     }
 
     /**
-     * RNF-03: Convierte una cadena de HTML/CSS en un array de bytes (PDF)
-     * usando Jsoup y Flying Saucer (ITextRenderer).
      *
      * @param htmlContent El string de HTML/CSS ya fusionado.
      * @return El archivo PDF como un array de bytes.

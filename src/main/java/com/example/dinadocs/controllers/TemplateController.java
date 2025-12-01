@@ -91,6 +91,7 @@ public class TemplateController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteTemplate(@PathVariable Long id,
                                             @AuthenticationPrincipal User authUser) {
+        System.out.println("Usuario autenticado: " + authUser);
         try {
             templateService.delete(id, authUser);
             return ResponseEntity.noContent().build();

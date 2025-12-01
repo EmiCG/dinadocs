@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.nio.file.AccessDeniedException;
 import java.util.regex.Matcher;
@@ -31,13 +32,12 @@ public class TemplateService {
      *
      */
     public Template save(Template template, User authUser) {
-        if (authUser.getRole() == Role.CREADOR || authUser.getRole() == Role.ADMIN) {
-            template.setPublic(true);
-            template.setOwner(authUser);
+        if (authUser.getRole().equals(Role.CREADOR)) {
+            template.setPublic(true); // Todas las plantillas creadas por un CREADOR son públicas
         } else {
             template.setPublic(false);
-            template.setOwner(authUser);
         }
+        template.setOwner(authUser);
 
         List<String> placeholders = extractPlaceholders(template.getContent());
         template.setPlaceholders(placeholders);
@@ -46,24 +46,24 @@ public class TemplateService {
 
     /**
      * Lista las plantillas según el rol del usuario.
-     * Lógica Nivel 2: ADMIN ve todo, el resto ve públicas + las suyas.
      *
      */
     public List<Template> findAllByRole(User authUser) {
         // Validacion TEMPORAL para probar sin usuario
-        if (authUser == null){
+        if (authUser == null) {
             return templateRepository.findByIsPublicTrue();
         }
-        // Fin de la logica TEMPORAL
         if (authUser.getRole() == Role.ADMIN) {
             return templateRepository.findAll();
+        }
+        if (authUser.getRole() == Role.CREADOR) {
+            return templateRepository.findByIsPublicTrue();
         }
         return templateRepository.findByIsPublicTrueOrOwner(authUser);
     }
 
     /**
      * Busca una plantilla por ID, verificando permisos de acceso (lectura).
-     * Lógica Nivel 2: Debe ser pública, O ser el dueño, O ser ADMIN.
      *
      */
     public Template findById(Long id, User authUser) throws AccessDeniedException {
@@ -88,6 +88,10 @@ public class TemplateService {
     public Template update(Long id, Template templateDetails, User authUser) throws AccessDeniedException {
         Template templateToUpdate = findById(id, authUser);
 
+        if (templateToUpdate.getOwner() == null) {
+            throw new RuntimeException("La plantilla no tiene un propietario asignado.");
+        }
+
         boolean isOwner = Objects.equals(templateToUpdate.getOwner().getId(), authUser.getId());
         boolean isAdmin = authUser.getRole() == Role.ADMIN;
         boolean isCreator = authUser.getRole() == Role.CREADOR;
@@ -108,28 +112,34 @@ public class TemplateService {
 
     /**
      * Elimina una plantilla, verificando permisos de (borrado).
-     * Lógica Nivel 2:
-     * 1. Solo ADMIN puede borrar plantillas públicas.
-     * 2. Solo el DUEÑO o un ADMIN pueden borrar plantillas privadas.
-     * 3. CREADOR no puede borrar (a menos que sea dueño de una privada).
      */
     public void delete(Long id, User authUser) throws AccessDeniedException {
-        Template templateToDelete = findById(id, authUser);
+        System.out.println("Intentando eliminar plantilla con ID: " + id);
+        Template template = templateRepository.findById(id)
+                .orElseThrow(() -> {
+                    System.out.println("Plantilla no encontrada con ID: " + id);
+                    return new RuntimeException("Plantilla no encontrada");
+                });
 
-        if (templateToDelete.isPublic() && authUser.getRole() != Role.ADMIN) {
-            throw new AccessDeniedException("Solo un ADMIN puede borrar plantillas públicas.");
-        }
+        System.out.println("Plantilla encontrada: " + template.getName() + ", Pública: " + template.isPublic());
+        System.out.println("Rol del usuario autenticado: " + authUser.getRole());
 
-        if (!templateToDelete.isPublic()) {
-            boolean isOwner = Objects.equals(templateToDelete.getOwner().getId(), authUser.getId());
-            boolean isAdmin = authUser.getRole() == Role.ADMIN;
-
-            if (!isOwner && !isAdmin) {
-                throw new AccessDeniedException("No tiene permiso para borrar esta plantilla privada.");
+        // Verificar permisos para eliminar
+        if (template.isPublic()) {
+            if (authUser.getRole() != Role.ADMIN) {
+                System.out.println("Acceso denegado: Solo un administrador puede eliminar una plantilla pública");
+                throw new AccessDeniedException("Solo un administrador puede eliminar una plantilla pública");
+            }
+        } else {
+            if (!template.getOwner().equals(authUser) && !authUser.getRole().equals(Role.ADMIN)) {
+                System.out.println("Acceso denegado: Solo el propietario o un administrador pueden eliminar esta plantilla privada");
+                throw new AccessDeniedException("Solo el propietario o un administrador pueden eliminar esta plantilla privada");
             }
         }
 
-        templateRepository.delete(templateToDelete);
+        System.out.println("Permisos verificados. Eliminando plantilla...");
+        templateRepository.delete(template);
+        System.out.println("Plantilla eliminada exitosamente.");
     }
 
     /**
@@ -149,5 +159,20 @@ public class TemplateService {
             matches.add(matcher.group(1));
         }
         return matches;
+    }
+
+    /**
+     * Valida que los datos proporcionados coincidan con los placeholders requeridos por la plantilla.
+     *
+     * @param template La plantilla que contiene los placeholders requeridos.
+     * @param data Los datos proporcionados por el usuario.
+     * @throws IllegalArgumentException Si falta algún placeholder requerido.
+     */
+    public void validateTemplatePlaceholders(Template template, Map<String, Object> data) {
+        for (String placeholder : template.getPlaceholders()) {
+            if (!data.containsKey(placeholder)) {
+                throw new IllegalArgumentException("Falta el dato para el marcador de posición: " + placeholder);
+            }
+        }
     }
 }

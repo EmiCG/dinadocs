@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-@Service // <--- Anotación clave para la capa de Servicio
+@Service
 public class AuthService {
 
     @Autowired
@@ -17,6 +17,8 @@ public class AuthService {
     private JwtUtils jwtUtils;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private TokenBlacklistService tokenBlacklistService; // Agregado
 
     // Lógica de Registro
     public User register(User user) {
@@ -39,4 +41,18 @@ public class AuthService {
             throw new RuntimeException("Contraseña incorrecta");
         }
     }
+
+    // Lógica de Logout
+    public String logout(String token) {
+        String jwt = token.replace("Bearer ", "");
+        tokenBlacklistService.invalidateToken(jwt);
+        return "Sesión cerrada correctamente";
+    }
+
+    // Verificación de Token
+    public boolean isTokenValid(String token) {
+        String jwt = token.replace("Bearer ", "");
+        return !tokenBlacklistService.isTokenInvalidated(jwt);
+    }
+
 }

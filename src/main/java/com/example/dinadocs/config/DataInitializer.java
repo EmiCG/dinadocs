@@ -2,7 +2,11 @@ package com.example.dinadocs.config;
 
 import com.example.dinadocs.models.Template;
 import com.example.dinadocs.repositories.TemplateRepository;
+import com.example.dinadocs.models.User;
+import com.example.dinadocs.repositories.UserRepository;
+import com.example.dinadocs.models.Role;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -20,14 +24,86 @@ import java.util.regex.Pattern;
 public class DataInitializer implements CommandLineRunner {
 
     private final TemplateRepository templateRepository;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public DataInitializer(TemplateRepository templateRepository) {
+    public DataInitializer(TemplateRepository templateRepository, UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.templateRepository = templateRepository;
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    /**
+     * Método de ayuda para crear una plantilla, solo si no existe.
+     */
+    private void createTemplateIfNotFound(String name, String content) {
+        if (templateRepository.findByName(name).isEmpty()) {
+            Template newTemplate = new Template();
+            newTemplate.setName(name);
+            newTemplate.setContent(content);
+            newTemplate.setPublic(true);
+
+            // Asignar el propietario al creador por defecto con ID 2
+            User owner = userRepository.findById(2L).orElseThrow(() -> new RuntimeException("Usuario creador no encontrado"));
+            newTemplate.setOwner(owner);
+
+            List<String> placeholders = extractPlaceholders(content);
+            newTemplate.setPlaceholders(placeholders);
+
+            templateRepository.save(newTemplate);
+            System.out.println("SEEDER: Creada plantilla '" + name + "'");
+        }
+    }
+
+    /**
+     * Método privado que usa Regex para encontrar todos los placeholders.
+     */
+    private List<String> extractPlaceholders(String htmlContent) {
+        List<String> matches = new ArrayList<>();
+        Pattern pattern = Pattern.compile("\\{\\{([^\\}]+)\\}\\}");
+        Matcher matcher = pattern.matcher(htmlContent);
+
+        while (matcher.find()) {
+            matches.add(matcher.group(1));
+        }
+        return matches;
+    }
+
+    /**
+     * Método para crear usuarios de prueba si no existen.
+     */
+    private void createDefaultUsers() {
+        if (userRepository.findByEmail("admin@gmail.com").isEmpty()) {
+            User admin = new User();
+            admin.setName("Administrador");
+            admin.setEmail("admin@gmail.com");
+            admin.setPassword(passwordEncoder.encode("admin123"));
+            admin.setRole(Role.ADMIN);
+            userRepository.save(admin);
+        }
+
+        if (userRepository.findByEmail("creator@gmail.com").isEmpty()) {
+            User creator = new User();
+            creator.setName("Creador");
+            creator.setEmail("creator@gmail.com");
+            creator.setPassword(passwordEncoder.encode("creator123"));
+            creator.setRole(Role.CREADOR);
+            userRepository.save(creator);
+        }
+
+        if (userRepository.findByEmail("user@gmail.com").isEmpty()) {
+            User user = new User();
+            user.setName("Usuario");
+            user.setEmail("user@gmail.com");
+            user.setPassword(passwordEncoder.encode("user123"));
+            user.setRole(Role.USUARIO);
+            userRepository.save(user);
+        }
     }
 
     @Override
     public void run(String... args) throws Exception {
-        
+        createDefaultUsers();
 
         createTemplateIfNotFound(
             "Factura",
@@ -203,40 +279,27 @@ public class DataInitializer implements CommandLineRunner {
                 """;
 
         createTemplateIfNotFound("PresupuestoCompuesto", presupuestoCompuesto);
-    }
 
-
-    /**
-     * Método de ayuda para crear una plantilla, solo si no existe.
-     */
-    private void createTemplateIfNotFound(String name, String content) {
-        if (templateRepository.findByName(name).isEmpty()) {
-            
-            Template newTemplate = new Template();
-            newTemplate.setName(name);
-            newTemplate.setContent(content);
-            newTemplate.setPublic(true);
-            newTemplate.setOwner(null);
-
-            List<String> placeholders = extractPlaceholders(content);
-            newTemplate.setPlaceholders(placeholders);
-
-            templateRepository.save(newTemplate);
-            System.out.println("SEEDER: Creada plantilla '" + name + "'");
-        }
-    }
-
-    /**
-     * Método privado que usa Regex para encontrar todos los placeholders.
-     */
-    private List<String> extractPlaceholders(String htmlContent) {
-        List<String> matches = new ArrayList<>();
-        Pattern pattern = Pattern.compile("\\{\\{([^\\}]+)\\}\\}");
-        Matcher matcher = pattern.matcher(htmlContent);
-
-        while (matcher.find()) {
-            matches.add(matcher.group(1));
-        }
-        return matches;
+        createTemplateIfNotFound(
+            "FacturaDinamica",
+            "<!DOCTYPE html>\n"
+           + "<html>\n"
+           + "<head>\n"
+           + "    <title>Factura</title>\n"
+           + "</head>\n"
+           + "<body>\n"
+           + "    <h1>Factura</h1>\n"
+           + "    <p>Cliente: {{cliente}}</p>\n"
+           + "    <p>Fecha: {{fecha}}</p>\n"
+           + "    <p>Productos:</p>\n"
+           + "    <ul>\n"
+           + "        {{#productos}}\n"
+           + "        <li>{{nombre}} - {{precio}} USD</li>\n"
+           + "        {{/productos}}\n"
+           + "    </ul>\n"
+           + "    <p>Total: {{total}} USD</p>\n"
+           + "</body>\n"
+           + "</html>"
+        );
     }
 }
