@@ -19,7 +19,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtUtils jwtUtils;
     private final TokenBlacklistService tokenBlacklistService;
-    private final UserRepository userRepository; // Agregado para recuperar el usuario desde la base de datos
+    private final UserRepository userRepository;
 
     public JwtFilter(JwtUtils jwtUtils, TokenBlacklistService tokenBlacklistService, UserRepository userRepository) {
         this.jwtUtils = jwtUtils;
@@ -47,7 +47,6 @@ public class JwtFilter extends OncePerRequestFilter {
                 String username = jwtUtils.validateTokenAndGetUsername(token);
 
                 if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                    // Recuperar el usuario desde la base de datos
                     User user = userRepository.findByEmail(username).orElse(null);
                     if (user != null) {
                         UsernamePasswordAuthenticationToken authToken = 
