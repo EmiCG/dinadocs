@@ -133,191 +133,251 @@ public class DataInitializer implements CommandLineRunner {
     <meta charset="UTF-8">
     <title>Presupuesto de Obra</title>
     <style>
+        /* --- Configuración A4 --- */
         @page {
             size: A4;
             margin: 0;
         }
+
         body {
             margin: 0;
             padding: 0;
-            background-color: #555;
-            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: #555; /* Fondo oscuro para ver la hoja en pantalla */
+            font-family: 'Arial', sans-serif; /* Fuente estándar limpia */
             color: #000;
+            -webkit-print-color-adjust: exact;
         }
+
         .page {
             width: 210mm;
             min-height: 297mm;
             background-color: white;
             margin: 20px auto;
             position: relative;
-            box-shadow: 0 0 15px rgba(0,0,0,0.3);
-            padding: 15mm 15mm; 
+            padding: 15mm; /* Margen interno de la hoja */
             box-sizing: border-box;
+            box-shadow: 0 0 15px rgba(0,0,0,0.5);
+            overflow: hidden; /* Evita que nada se salga de la hoja visualmente */
         }
+
+        /* --- ENCABEZADO (Corrección de Imagen) --- */
         .header {
-            display: table;
-            width: 100%;
-            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start; /* Alinea arriba para que el logo no baje el texto */
+            margin-bottom: 15px;
+            gap: 20px; /* Espacio entre logo y texto */
         }
+
         .logo-container {
-            display: table-cell;
-            width: 150px;
-            height: 120px;
-            vertical-align: top;
-            border: 1px dashed #ccc; 
-            text-align: center;
+            /* Dimensiones fijas para el área del logo */
+            width: 160px; 
+            height: 140px; 
+            /* Flexbox para centrar la imagen dentro de este cuadro */
+            display: flex;
+            align-items: center; 
+            justify-content: flex-start;
+            overflow: hidden; /* IMPORTANTE: Corta lo que sobre si es gigante */
         }
+
         .logo-img {
+            /* La imagen nunca excederá el ancho/alto del contenedor */
             max-width: 100%;
             max-height: 100%;
+            object-fit: contain; /* Se ajusta sin deformarse */
+            display: block;
         }
+
         .company-info {
-            display: table-cell;
             text-align: right;
             font-size: 11px;
-            line-height: 1.4;
-            vertical-align: top;
-            padding-left: 20px;
+            line-height: 1.3;
+            flex: 1; /* Toma el espacio restante */
         }
+
         .company-name {
             font-weight: bold;
             font-size: 14px;
-            margin-bottom: 5px;
             text-transform: uppercase;
+            margin-bottom: 5px;
         }
-        .rfc {
+
+        .rfc-line {
             font-weight: bold;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             display: block;
         }
+
+        /* --- Barra Amarilla --- */
         .yellow-bar {
-            background-color: #FFFF00;
-            height: 8px;
+            background-color: #FFFF00; /* Amarillo puro */
+            height: 6px;
             width: 100%;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
-        .meta-info {
-            text-align: right;
+
+        /* --- Datos Cliente y Título --- */
+        .meta-data {
             font-size: 12px;
             margin-bottom: 20px;
         }
-        .date-line {
+
+        .date-right {
+            text-align: right;
             font-weight: bold;
             margin-bottom: 15px;
         }
+
         .client-block {
             text-align: left;
             font-weight: bold;
-            font-size: 12px;
             text-transform: uppercase;
             width: 80%;
-            margin-bottom: 20px;
             line-height: 1.4;
         }
-        .doc-title {
+
+        .document-title {
             text-align: center;
             font-weight: bold;
             font-size: 14px;
-            margin-bottom: 10px;
+            margin-top: 20px;
+            margin-bottom: 5px;
             letter-spacing: 1px;
         }
-        .currency-label {
+
+        .currency {
             text-align: right;
-            font-size: 11px;
+            font-size: 10px;
             margin-bottom: 2px;
         }
+
+        /* --- Tabla --- */
         table {
             width: 100%;
             border-collapse: collapse;
-            border: 2px solid black;
+            border: 2px solid black; /* Marco exterior grueso */
             font-size: 11px;
-            margin-bottom: 20px;
         }
+
         th {
-            background-color: #cccccc;
+            background-color: #d9d9d9; /* Gris suave */
             border: 1px solid black;
-            padding: 5px;
+            padding: 6px;
+            text-align: center;
             font-weight: bold;
             text-transform: uppercase;
-            text-align: center;
         }
+
         td {
             border: 1px solid black;
-            padding: 5px;
-            height: 20px;
+            padding: 4px 6px;
             vertical-align: middle;
+            height: 22px; /* Altura mínima de fila */
         }
-        .col-cant { width: 10%; text-align: center; }
-        .col-desc { width: 60%; text-align: left; }
+
+        /* Anchos de columnas ajustados a la imagen */
+        .col-cant { width: 8%; text-align: center; }
+        .col-concept { width: 62%; text-align: left; }
         .col-unit { width: 15%; text-align: right; }
-        .col-imp { width: 15%; text-align: right; }
-        .totals-section {
-            text-align: right;
-            margin-top: 10px;
+        .col-import { width: 15%; text-align: right; }
+
+        /* --- Totales --- */
+        .totals-wrapper {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 15px;
         }
+
         .totals-table {
-            display: inline-block;
             border: none;
-            font-size: 12px;
+            width: auto;
         }
+
         .totals-table td {
             border: none;
-            padding: 3px 10px;
+            padding: 4px 10px;
             text-align: right;
+            font-size: 12px;
         }
-        .totals-label {
-            font-weight: bold;
+
+        .label-total { font-weight: bold; }
+        
+        /* Checkbox decorativo gris en la derecha (como en la imagen) */
+        .checkbox-decoration {
+            position: absolute;
+            right: 15mm;
+            top: 55%;
+            width: 15px;
+            height: 15px;
+            border: 1px solid #999;
+            background: #fff;
         }
+
+        /* Ajustes de impresión */
         @media print {
             body { background: none; }
-            .page { margin: 0; box-shadow: none; width: 100%; height: 100%; }
-            .logo-container { border: none; }
+            .page { 
+                margin: 0; 
+                box-shadow: none; 
+                width: 100%;
+                height: 100%; 
+                border: none;
+            }
         }
     </style>
 </head>
 <body>
+
     <div class="page">
         <div class="header">
             <div class="logo-container">
-                <img src="{{url_logo_empresa}}" alt="Logo Empresa" class="logo-img">
+                <img src="{{url_logo_empresa}}" alt="Logo" class="logo-img">
             </div>
+            
             <div class="company-info">
                 <div class="company-name">{{nombre_emisor}}</div>
-                <span class="rfc">R.F.C {{rfc_emisor}}</span>
+                <span class="rfc-line">R.F.C {{rfc_emisor}}</span>
                 <div>Régimen Fiscal: {{regimen_fiscal}}</div>
-                <div style="margin-top: 5px;">Domicilio Fiscal: {{direccion_fiscal}}</div>
-                <div>{{ciudad_estado}}</div>
+                <div style="margin-top:4px;">Domicilio Fiscal: {{direccion_fiscal}}</div>
+                <div>{{ciudad_estado_cp}}</div>
             </div>
         </div>
+
         <div class="yellow-bar"></div>
-        <div class="meta-info">
-            <div class="date-line">{{lugar_y_fecha}}</div>
+
+        <div class="meta-data">
+            <div class="date-right">{{lugar_y_fecha}}</div>
+            
+            <div class="client-block">
+                {{nombre_cliente}}<br>
+                PRESENTE, PRESENTE
+            </div>
         </div>
-        <div class="client-block">
-            {{nombre_cliente_completo}}<br>
-            PRESENTE, PRESENTE
-        </div>
-        <div class="doc-title">PRESUPUESTO</div>
-        <div class="currency-label">Moneda: MXN – peso mexicano</div>
+
+        <div class="document-title">PRESUPUESTO</div>
+        <div class="currency">Moneda: MXN – peso mexicano</div>
+
         <table>
             <thead>
                 <tr>
                     <th class="col-cant">CANTIDAD</th>
-                    <th class="col-desc">CONCEPTO</th>
+                    <th class="col-concept">CONCEPTO</th>
                     <th class="col-unit">P. UNITARIO</th>
-                    <th class="col-imp">IMPORTE</th>
+                    <th class="col-import">IMPORTE</th>
                 </tr>
             </thead>
             <tbody>
                 {{#partidas}}
                 <tr>
                     <td class="col-cant">{{cantidad}}</td>
-                    <td class="col-desc">{{descripcion}}</td>
+                    <td class="col-concept">{{descripcion}}</td>
                     <td class="col-unit">{{precio_unitario}}</td>
-                    <td class="col-imp">{{importe}}</td>
+                    <td class="col-import">{{importe}}</td>
                 </tr>
                 {{/partidas}}
+
                 {{^partidas}}
+                <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
                 <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
                 <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
                 <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
@@ -325,23 +385,28 @@ public class DataInitializer implements CommandLineRunner {
                 {{/partidas}}
             </tbody>
         </table>
-        <div class="totals-section">
+
+        <div class="totals-wrapper">
             <table class="totals-table">
                 <tr>
-                    <td class="totals-label">SUBTOTAL:</td>
+                    <td class="label-total">SUBTOTAL:</td>
                     <td>$ {{subtotal}}</td>
                 </tr>
                 <tr>
-                    <td class="totals-label">IVA (16%):</td>
+                    <td class="label-total">IVA (16%):</td>
                     <td>$ {{iva}}</td>
                 </tr>
                 <tr>
-                    <td class="totals-label">TOTAL:</td>
+                    <td class="label-total">TOTAL:</td>
                     <td>$ {{total_final}}</td>
                 </tr>
             </table>
         </div>
+
+        <div class="checkbox-decoration"></div>
+
     </div>
+
 </body>
 </html>
                 """;
