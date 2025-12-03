@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Service
 public class AuthService {
 
@@ -18,9 +21,8 @@ public class AuthService {
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
-    private TokenBlacklistService tokenBlacklistService; // Agregado
+    private TokenBlacklistService tokenBlacklistService;
 
-    // Lógica de Registro
     public User register(User user) {
         if (userRepository.findByEmail(user.getEmail()).isPresent()) {
             throw new RuntimeException("El usuario ya existe");
@@ -30,26 +32,27 @@ public class AuthService {
         return userRepository.save(user);
     }
 
-    // Lógica de Login
-    public String login(String email, String password) {
+    public Map<String, Object> login(String email, String password) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         if (passwordEncoder.matches(password, user.getPassword())) {
-            return jwtUtils.generateToken(email);
+            String token = jwtUtils.generateToken(email);
+            Map<String, Object> response = new HashMap<>();
+            response.put("token", token);
+            response.put("role", user.getRole());
+            return response;
         } else {
             throw new RuntimeException("Contraseña incorrecta");
         }
     }
 
-    // Lógica de Logout
     public String logout(String token) {
         String jwt = token.replace("Bearer ", "");
         tokenBlacklistService.invalidateToken(jwt);
         return "Sesión cerrada correctamente";
     }
 
-    // Verificación de Token
     public boolean isTokenValid(String token) {
         String jwt = token.replace("Bearer ", "");
         return !tokenBlacklistService.isTokenInvalidated(jwt);

@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -23,18 +22,12 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public Map<String, String> authenticateUser(@RequestBody Map<String, String> request) {
-        try{
-        String token = authService.login(request.get("email"), request.get("password"));
-        
-        Map<String, String> response = new HashMap<>();
-        response.put("token", token);
-        return response;
-    
-        }catch (Exception e){
+    public Map<String, Object> authenticateUser(@RequestBody Map<String, String> request) {
+        try {
+            return authService.login(request.get("email"), request.get("password"));
+        } catch (Exception e) {
             throw new RuntimeException("Error de autenticación: " + e.getMessage());
         }
-
     }
 
     @PostMapping("/logout")
