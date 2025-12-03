@@ -9,11 +9,8 @@ import java.util.Date;
 @Component
 public class JwtUtils {
 
-    // 1. La "Firma Secreta"
-    // Tiene que ser muy larga para que sea segura. 
     private static final String SECRET = "EstaEsUnaClaveSuperSecretaQueNadiePuedeAdivinar123456";
     
-    // 2. Duración (Ej: 24 horas en milisegundos)
     private static final long EXPIRATION_TIME = 86400000; 
 
     private final Key key = Keys.hmacShaKeyFor(SECRET.getBytes());

@@ -49,14 +49,14 @@ public class TemplateService {
      *
      */
     public List<Template> findAllByRole(User authUser) {
-        // Validacion TEMPORAL para probar sin usuario
-        if (authUser == null) {
-            return templateRepository.findByIsPublicTrue();
-        }
+
         if (authUser.getRole() == Role.ADMIN) {
             return templateRepository.findAll();
         }
         if (authUser.getRole() == Role.CREADOR) {
+            return templateRepository.findByIsPublicTrue();
+        }
+        if (authUser.getRole() == Role.USUARIO) {
             return templateRepository.findByIsPublicTrue();
         }
         return templateRepository.findByIsPublicTrueOrOwner(authUser);
