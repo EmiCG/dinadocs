@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Carta de Recomendación A4</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 0;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #555;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            color: #333;
+            -webkit-print-color-adjust: exact;
+        }
+
+        .page {
+            width: 210mm;
+            height: 297mm;
+            background-color: white;
+            margin: 20px auto;
+            position: relative;
+            box-shadow: 0 0 15px rgba(0,0,0,0.3);
+            box-sizing: border-box;
+            padding: 25mm;
+        }
+
+        .header-container {
+            overflow: hidden;
+            margin-bottom: 60px;
+        }
+
+        .header-left {
+            float: left;
+            max-width: 60%;
+        }
+
+        h1 {
+            font-size: 32px;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            line-height: 1.2;
+            margin: 0 0 20px 0;
+            color: #222;
+        }
+
+        .date {
+            font-size: 14px;
+            color: #444;
+        }
+
+        .header-right {
+            float: right;
+            text-align: right;
+            font-size: 12px;
+            line-height: 2;
+            color: #333;
+        }
+
+        .icon {
+            display: inline-block;
+            margin-left: 8px;
+            font-size: 14px;
+        }
+
+        .letter-body {
+            font-size: 14px;
+            line-height: 1.8;
+            color: #444;
+            text-align: justify;
+            margin-bottom: 40px;
+        }
+
+        .salutation {
+            font-weight: bold;
+            color: #222;
+            margin-bottom: 25px;
+            display: block;
+            font-size: 15px;
+        }
+
+        .letter-body p {
+            margin-bottom: 20px;
+        }
+
+        .footer-section {
+            margin-top: 40px;
+        }
+
+        .closing {
+            font-size: 15px;
+            color: #222;
+            margin-bottom: 40px;
+        }
+
+        .signature-block {
+            float: right;
+            text-align: right;
+            min-width: 200px;
+        }
+
+        .signature-script {
+            font-family: 'Brush Script MT', 'Lucida Handwriting', cursive;
+            font-size: 36px;
+            color: #333;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .signer-name {
+            font-weight: bold;
+            font-size: 16px;
+            color: #222;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .signer-title {
+            font-size: 14px;
+            color: #555;
+            display: block;
+        }
+
+        @media print {
+            body { background: none; }
+            .page { margin: 0; box-shadow: none; width: 100%; height: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <div class="header-container">
+            <div class="header-left">
+                <h1>Carta de<br>Recomendación</h1>
+                <div class="date">{{fecha_actual}}</div>
+            </div>
+            
+            <div class="header-right">
+                <div>{{email_empresa}} <span class="icon">✉️</span></div>
+                <div>{{telefono_empresa}} <span class="icon">📞</span></div>
+                <div>{{web_empresa}} <span class="icon">💻</span></div>
+            </div>
+            <div style="clear: both;"></div>
+        </div>
+
+        <div class="letter-body">
+            <span class="salutation">A quien corresponda:</span>
+
+            <p>
+                Por medio de la presente, me permito recomendar ampliamente a <strong>{{nombre_recomendado}}</strong>, 
+                quien prestó sus servicios en nuestra organización, <strong>{{nombre_empresa}}</strong>, 
+                durante el periodo comprendido entre <strong>{{fecha_inicio}}</strong> y <strong>{{fecha_fin}}</strong>.
+            </p>
+
+            <p>
+                Durante el tiempo que colaboró con nosotros, desempeñó el cargo de <strong>{{cargo_desempenado}}</strong>, 
+                demostrando en todo momento ser una persona íntegra, responsable y trabajadora. 
+                Sus labores fueron ejecutadas con un alto nivel de profesionalismo, destacándose particularmente por 
+                {{habilidad_destacada_1}} y {{habilidad_destacada_2}}.
+            </p>
+
+            <p>
+                Asimismo, poseo constancia de su excelente conducta, espíritu de colaboración y gran capacidad para trabajar en equipo, 
+                cualidades que le permitieron mantener una relación cordial y productiva tanto con sus compañeros como con sus superiores.
+            </p>
+
+            <p>
+                Por lo anterior, no tengo inconveniente alguno en extender la presente carta de recomendación para los fines que al interesado convengan, 
+                quedando a su disposición para corroborar esta información si así lo requieren.
+            </p>
+        </div>
+
+        <div class="footer-section">
+            <div class="closing">Atentamente,</div>
+
+            <div class="signature-block">
+                <span class="signature-script">{{texto_firma_manuscrita}}</span>
+                <span class="signer-name">{{nombre_firmante}}</span>
+                <span class="signer-title">{{cargo_firmante}}</span>
+            </div>
+            <div style="clear: both;"></div>
+        </div>
+    </div>
+</body>
+</html>

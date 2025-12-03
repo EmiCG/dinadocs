@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Curriculum Vitae A4</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 0;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #555;
+            font-family: 'Helvetica', 'Arial', sans-serif;
+            color: #333;
+            -webkit-print-color-adjust: exact;
+        }
+
+        .page {
+            width: 210mm;
+            min-height: 297mm;
+            background-color: white;
+            margin: 20px auto;
+            padding: 40px 50px;
+            box-sizing: border-box;
+            box-shadow: 0 0 15px rgba(0,0,0,0.3);
+            position: relative;
+        }
+
+        h1, h2, h3, h4 { margin: 0; text-transform: uppercase; letter-spacing: 1px; }
+        p { margin: 0; line-height: 1.5; font-size: 13px; text-align: justify; }
+        ul { margin: 0; padding-left: 20px; }
+        li { font-size: 13px; margin-bottom: 5px; }
+
+        .separator-line {
+            border-bottom: 1px solid #ccc;
+            margin: 25px 0;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            font-weight: normal;
+            letter-spacing: 3px;
+            margin-bottom: 5px;
+            color: #000;
+        }
+
+        .header h2 {
+            font-size: 14px;
+            font-weight: normal;
+            letter-spacing: 2px;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        .contact-bar {
+            border-top: 1px solid #ccc;
+            border-bottom: 1px solid #ccc;
+            padding: 8px 0;
+            font-size: 12px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .contact-item {
+            display: inline-block;
+            margin: 0 20px;
+        }
+
+        .contact-item span {
+            margin-right: 5px;
+            font-size: 14px;
+        }
+
+        .profile-section h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: #000;
+        }
+        
+        .main-container {
+            overflow: hidden;
+            margin-top: 0;
+        }
+
+        .left-column {
+            width: 35%;
+            float: left;
+            padding-right: 20px;
+            border-right: 1px solid #ccc;
+        }
+
+        .right-column {
+            width: 60%;
+            float: right;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #000;
+        }
+
+        .education-item {
+            margin-bottom: 15px;
+        }
+        .edu-degree { font-weight: bold; font-size: 13px; }
+        .edu-school { font-size: 13px; font-style: italic; }
+        .edu-year { font-size: 12px; color: #666; margin-top: 2px; }
+
+        .skills-list li {
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        .job-item {
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .job-dates {
+            width: 80px;
+            font-size: 12px;
+            font-weight: bold;
+            color: #333;
+            float: left;
+            padding-top: 2px;
+        }
+
+        .job-content {
+            margin-left: 90px;
+        }
+
+        .job-company { font-weight: bold; font-size: 13px; text-transform: uppercase; }
+        .job-role { font-size: 12px; text-transform: uppercase; color: #555; margin-bottom: 5px; display: block; }
+        .job-desc { font-size: 13px; color: #333; }
+
+        .references-grid {
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        .ref-item {
+            width: 48%;
+            float: left;
+            font-size: 13px;
+            margin-right: 4%;
+        }
+        .ref-item:nth-child(2n) {
+            margin-right: 0;
+        }
+        .ref-name { font-weight: bold; text-transform: uppercase; display: block;}
+        .ref-company { font-style: italic; display: block; margin-bottom: 3px;}
+
+        @media print {
+            body { background: none; }
+            .page { margin: 0; box-shadow: none; width: 100%; height: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <div class="header">
+            <h1>{{nombre_completo}}</h1>
+            <h2>{{titulo_profesional}}</h2>
+            
+            <div class="contact-bar">
+                <div class="contact-item"><span>📞</span> {{telefono}}</div>
+                <div class="contact-item"><span>✉️</span> {{email}}</div>
+                <div class="contact-item"><span>📍</span> {{direccion}}</div>
+            </div>
+        </div>
+
+        <div class="profile-section">
+            <h3 class="section-title">SOBRE MÍ</h3>
+            <p>{{perfil_profesional}}</p>
+        </div>
+
+        <div class="separator-line"></div>
+
+        <div class="main-container">
+            <div class="left-column">
+                <div style="margin-bottom: 40px;">
+                    <h3 class="section-title">EDUCACIÓN</h3>
+                    {{#educacion}}
+                    <div class="education-item">
+                        <div class="edu-degree">{{titulo_obtenido}}</div>
+                        <div class="edu-school">{{institucion}}</div>
+                        <div class="edu-year">{{anio_inicio}} - {{anio_fin}}</div>
+                    </div>
+                    {{/educacion}}
+                </div>
+
+                <div style="margin-bottom: 40px;">
+                    <h3 class="section-title">HABILIDADES</h3>
+                    <ul class="skills-list">
+                        {{#habilidades}}
+                        <li>{{habilidad}}</li>
+                        {{/habilidades}}
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="section-title">IDIOMAS</h3>
+                    {{#idiomas}}
+                    <div style="margin-bottom: 5px; font-size: 13px;">
+                        <strong>{{idioma}}</strong>: {{nivel}}
+                    </div>
+                    {{/idiomas}}
+                </div>
+            </div>
+
+            <div class="right-column">
+                <div style="margin-bottom: 40px;">
+                    <h3 class="section-title">EXPERIENCIA</h3>
+                    {{#experiencia_laboral}}
+                    <div class="job-item">
+                        <div class="job-dates">{{anio_inicio}} - {{anio_fin}}</div>
+                        <div class="job-content">
+                            <span class="job-company">{{empresa}}</span><br>
+                            <span class="job-role">{{cargo}}</span>
+                            <p class="job-desc">{{descripcion_tareas}}</p>
+                        </div>
+                    </div>
+                    {{/experiencia_laboral}}
+                </div>
+
+                <div>
+                    <h3 class="section-title">REFERENCIAS</h3>
+                    <div class="references-grid">
+                        {{#referencias}}
+                        <div class="ref-item">
+                            <span class="ref-name">{{nombre_referencia}}</span>
+                            <span class="ref-company">{{empresa_referencia}}</span>
+                            <div>{{telefono_referencia}}</div>
+                            <div>{{email_referencia}}</div>
+                        </div>
+                        {{/referencias}}
+                    </div>
+                </div>
+            </div>
+            <div style="clear: both;"></div>
+        </div>
+    </div>
+</body>
+</html>

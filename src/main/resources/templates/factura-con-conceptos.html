@@ -1,0 +1,17 @@
+<html>
+<head>
+    <title>Factura</title>
+</head>
+<body>
+    <h1>Factura</h1>
+    <p>Cliente: {{cliente}}</p>
+    <p>Fecha: {{fecha}}</p>
+    <p>Conceptos:</p>
+    <ul>
+        {{#conceptos}}
+        <li>{{descripcion}} - {{cantidad}} x {{precio_unitario}} = {{total}}</li>
+        {{/conceptos}}
+    </ul>
+    <p>Total: {{total_factura}}</p>
+</body>
+</html>
