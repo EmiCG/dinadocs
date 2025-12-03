@@ -301,5 +301,158 @@ public class DataInitializer implements CommandLineRunner {
            + "</body>\n"
            + "</html>"
         );
+
+        createTemplateIfNotFound(
+            "Curriculum Vitae",
+            "<html>\n"
+           + "<head>\n"
+           + "    <title>Curriculum Vitae</title>\n"
+           + "    <style>\n"
+           + "        body { font-family: Arial, sans-serif; margin: 20px; }\n"
+           + "        h1 { color: #0056b3; }\n"
+           + "        p { margin: 5px 0; }\n"
+           + "        ul { padding-left: 20px; }\n"
+           + "        li { margin-bottom: 5px; }\n"
+           + "    </style>\n"
+           + "</head>\n"
+           + "<body>\n"
+           + "    <h1>Curriculum Vitae</h1>\n"
+           + "    <p><strong>Nombre:</strong> {{nombre}}</p>\n"
+           + "    <p><strong>Fecha de Nacimiento:</strong> {{fecha_nacimiento}}</p>\n"
+           + "    <p><strong>Dirección:</strong> {{direccion}}</p>\n"
+           + "    <p><strong>Teléfono:</strong> {{telefono}}</p>\n"
+           + "    <p><strong>Email:</strong> {{email}}</p>\n"
+           + "    <h2>Experiencia Laboral</h2>\n"
+           + "    <ul>\n"
+           + "        {{#experiencia}}\n"
+           + "        <li>{{puesto}} en {{empresa}} ({{fecha_inicio}} - {{fecha_fin}})</li>\n"
+           + "        {{/experiencia}}\n"
+           + "    </ul>\n"
+           + "    <h2>Educación</h2>\n"
+           + "    <ul>\n"
+           + "        {{#educacion}}\n"
+           + "        <li>{{grado}} en {{institucion}} ({{fecha_inicio}} - {{fecha_fin}})</li>\n"
+           + "        {{/educacion}}\n"
+           + "    </ul>\n"
+           + "</body>\n"
+           + "</html>"
+        );
+
+        createTemplateIfNotFound(
+            "Resumen de Vida",
+            "<html>\n"
+           + "<head>\n"
+           + "    <title>Resumen de Vida</title>\n"
+           + "</head>\n"
+           + "<body>\n"
+           + "    <h1>Resumen de Vida</h1>\n"
+           + "    <p>Nombre: {{nombre}}</p>\n"
+           + "    <p>Edad: {{edad}}</p>\n"
+           + "    <p>Profesión: {{profesion}}</p>\n"
+           + "    <p>Habilidades: {{habilidades}}</p>\n"
+           + "    <p>Intereses: {{intereses}}</p>\n"
+           + "</body>\n"
+           + "</html>"
+        );
+
+        createTemplateIfNotFound(
+            "Perfil",
+            "<html>\n"
+           + "<head>\n"
+           + "    <title>Perfil</title>\n"
+           + "</head>\n"
+           + "<body>\n"
+           + "    <h1>Perfil</h1>\n"
+           + "    <p>Nombre: {{nombre}}</p>\n"
+           + "    <p>Edad: {{edad}}</p>\n"
+           + "    <p>Correo Electrónico: {{email}}</p>\n"
+           + "    <p>Teléfono: {{telefono}}</p>\n"
+           + "    <p>Dirección: {{direccion}}</p>\n"
+           + "</body>\n"
+           + "</html>"
+        );
+
+        createTemplateIfNotFound(
+            "Carta de Recomendación",
+            "<html>\n"
+           + "<head>\n"
+           + "    <title>Carta de Recomendación</title>\n"
+           + "    <style>\n"
+           + "        body { font-family: Arial, sans-serif; margin: 20px; }\n"
+           + "        h1 { color: #0056b3; }\n"
+           + "        p { margin: 5px 0; }\n"
+           + "    </style>\n"
+           + "</head>\n"
+           + "<body>\n"
+           + "    <h1>Carta de Recomendación</h1>\n"
+           + "    <p><strong>Para:</strong> {{nombre_recomendado}}</p>\n"
+           + "    <p><strong>De:</strong> {{nombre_recomendador}}</p>\n"
+           + "    <p><strong>Fecha:</strong> {{fecha}}</p>\n"
+           + "    <p><strong>Contenido:</strong> {{contenido}}</p>\n"
+           + "</body>\n"
+           + "</html>"
+        );
+
+        createTemplateIfNotFound(
+            "Pagaré",
+            "<html>\n"
+           + "<head>\n"
+           + "    <title>Pagaré</title>\n"
+           + "</head>\n"
+           + "<body>\n"
+           + "    <h1>Pagaré</h1>\n"
+           + "    <p>Deudor: {{nombre_deudor}}</p>\n"
+           + "    <p>Acreedor: {{nombre_acreedor}}</p>\n"
+           + "    <p>Monto: {{monto}}</p>\n"
+           + "    <p>Fecha de Pago: {{fecha_pago}}</p>\n"
+           + "    <p>Contenido: {{contenido}}</p>\n"
+           + "</body>\n"
+           + "</html>"
+        );
+
+        createTemplateIfNotFound(
+            "Recibo de Pago",
+            "<html>\n"
+           + "<head>\n"
+           + "    <title>Recibo de Pago</title>\n"
+           + "    <style>\n"
+           + "        body { font-family: Arial, sans-serif; margin: 20px; }\n"
+           + "        h1 { color: #0056b3; }\n"
+           + "        p { margin: 5px 0; }\n"
+           + "        table { width: 100%; border-collapse: collapse; margin-top: 20px; }\n"
+           + "        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }\n"
+           + "        th { background-color: #0056b3; color: white; }\n"
+           + "    </style>\n"
+           + "</head>\n"
+           + "<body>\n"
+           + "    <h1>Recibo de Pago</h1>\n"
+           + "    <p><strong>Nombre:</strong> {{nombre}}</p>\n"
+           + "    <p><strong>Monto:</strong> {{monto}}</p>\n"
+           + "    <p><strong>Fecha:</strong> {{fecha}}</p>\n"
+           + "    <p><strong>Concepto:</strong> {{concepto}}</p>\n"
+           + "</body>\n"
+           + "</html>"
+        );
+
+        createTemplateIfNotFound(
+            "Factura con Conceptos",
+            "<html>\n"
+           + "<head>\n"
+           + "    <title>Factura</title>\n"
+           + "</head>\n"
+           + "<body>\n"
+           + "    <h1>Factura</h1>\n"
+           + "    <p>Cliente: {{cliente}}</p>\n"
+           + "    <p>Fecha: {{fecha}}</p>\n"
+           + "    <p>Conceptos:</p>\n"
+           + "    <ul>\n"
+           + "        {{#conceptos}}\n"
+           + "        <li>{{descripcion}} - {{cantidad}} x {{precio_unitario}} = {{total}}</li>\n"
+           + "        {{/conceptos}}\n"
+           + "    </ul>\n"
+           + "    <p>Total: {{total_factura}}</p>\n"
+           + "</body>\n"
+           + "</html>"
+        );
     }
 }
