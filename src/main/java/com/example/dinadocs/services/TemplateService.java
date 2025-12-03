@@ -49,7 +49,7 @@ public class TemplateService {
      *
      */
     public List<Template> findAllByRole(User authUser) {
-
+        System.out.println("Buscando plantillas para el usuario con rol: " + authUser.getRole());
         if (authUser.getRole() == Role.ADMIN) {
             return templateRepository.findAll();
         }

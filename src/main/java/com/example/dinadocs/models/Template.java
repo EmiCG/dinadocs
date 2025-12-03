@@ -20,8 +20,7 @@ public class Template {
     @Column(nullable = false)
     private String name;
 
-    @Lob
-    @Column(nullable = false, columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT")
     private String content;
 
     @JsonIgnore
