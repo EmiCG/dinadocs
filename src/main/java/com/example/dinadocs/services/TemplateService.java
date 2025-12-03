@@ -57,9 +57,9 @@ public class TemplateService {
             return templateRepository.findByIsPublicTrue();
         }
         if (authUser.getRole() == Role.USUARIO) {
-            return templateRepository.findByIsPublicTrue();
+            return templateRepository.findByIsPublicTrueOrOwner(authUser);
         }
-        return templateRepository.findByIsPublicTrueOrOwner(authUser);
+        return templateRepository.findByIsPublicTrue();
     }
 
     /**
@@ -131,7 +131,8 @@ public class TemplateService {
                 throw new AccessDeniedException("Solo un administrador puede eliminar una plantilla pública");
             }
         } else {
-            if (!template.getOwner().equals(authUser) && !authUser.getRole().equals(Role.ADMIN)) {
+            boolean isOwner = Objects.equals(template.getOwner().getId(), authUser.getId());
+            if (!isOwner && authUser.getRole() != Role.ADMIN) {
                 System.out.println("Acceso denegado: Solo el propietario o un administrador pueden eliminar esta plantilla privada");
                 throw new AccessDeniedException("Solo el propietario o un administrador pueden eliminar esta plantilla privada");
             }
