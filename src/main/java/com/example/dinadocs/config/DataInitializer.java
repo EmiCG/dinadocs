@@ -158,7 +158,7 @@ public class DataInitializer implements CommandLineRunner {
         createTemplateFromFile("Contrato de Servicios", "contrato-de-servicios-simple.html");
         createTemplateFromFile("Certificado de curso", "certificado.html");
         createTemplateFromFile("Orden de Compra", "orden-de-compra.html");
-        createTemplateFromFile("Orden de servicio tecnico"," orden-de-servicio.html");
+        createTemplateFromFile("Orden de servicio tecnico", "orden-de-servicio.html");
     }
     
 }
