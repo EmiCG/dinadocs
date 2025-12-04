@@ -1,0 +1,7 @@
+com.example.dinadocs
+com.example.dinadocs.config
+com.example.dinadocs.controllers
+com.example.dinadocs.models
+com.example.dinadocs.repositories
+com.example.dinadocs.security
+com.example.dinadocs.services

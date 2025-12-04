@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"com.example.dinadocs"},{"l":"com.example.dinadocs.config"},{"l":"com.example.dinadocs.controllers"},{"l":"com.example.dinadocs.models"},{"l":"com.example.dinadocs.repositories"},{"l":"com.example.dinadocs.security"},{"l":"com.example.dinadocs.services"}];updateSearchResults();

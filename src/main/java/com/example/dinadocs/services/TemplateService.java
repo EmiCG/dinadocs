@@ -30,6 +30,9 @@ public class TemplateService {
      * Guarda una plantilla, aplicando lógica de roles.
      * Lógica Nivel 2: Asigna 'owner' y 'isPublic' basado en el rol del usuario.
      *
+     * @param template la plantilla a guardar
+     * @param authUser el usuario autenticado
+     * @return la plantilla guardada con placeholders extraídos
      */
     public Template save(Template template, User authUser) {
         if (authUser.getRole().equals(Role.CREADOR)) {
@@ -47,6 +50,8 @@ public class TemplateService {
     /**
      * Lista las plantillas según el rol del usuario.
      *
+     * @param authUser el usuario autenticado
+     * @return lista de plantillas accesibles según el rol
      */
     public List<Template> findAllByRole(User authUser) {
         System.out.println("Buscando plantillas para el usuario con rol: " + authUser.getRole());
@@ -65,6 +70,10 @@ public class TemplateService {
     /**
      * Busca una plantilla por ID, verificando permisos de acceso (lectura).
      *
+     * @param id el identificador de la plantilla
+     * @param authUser el usuario autenticado
+     * @return la plantilla si tiene permisos
+     * @throws AccessDeniedException si no tiene permisos de lectura
      */
     public Template findById(Long id, User authUser) throws AccessDeniedException {
         Template template = templateRepository.findById(id)
@@ -84,6 +93,11 @@ public class TemplateService {
      * Actualiza una plantilla, verificando permisos de (escritura).
      * Lógica Nivel 2: Solo el dueño o un ADMIN pueden modificar.
      *
+     * @param id el identificador de la plantilla
+     * @param templateDetails los nuevos datos de la plantilla
+     * @param authUser el usuario autenticado
+     * @return la plantilla actualizada
+     * @throws AccessDeniedException si no tiene permisos de escritura
      */
     public Template update(Long id, Template templateDetails, User authUser) throws AccessDeniedException {
         Template templateToUpdate = findById(id, authUser);
@@ -112,6 +126,10 @@ public class TemplateService {
 
     /**
      * Elimina una plantilla, verificando permisos de (borrado).
+     * 
+     * @param id el identificador de la plantilla
+     * @param authUser el usuario autenticado
+     * @throws AccessDeniedException si no tiene permisos de eliminación
      */
     public void delete(Long id, User authUser) throws AccessDeniedException {
         System.out.println("Intentando eliminar plantilla con ID: " + id);

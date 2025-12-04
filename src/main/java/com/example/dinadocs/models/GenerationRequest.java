@@ -7,7 +7,10 @@ import lombok.NoArgsConstructor;
 /**
  * DTO (Data Transfer Object) para la petición de generación de PDF.
  * Define el contrato JSON que el cliente (Flutter) debe enviar.
- *
+ * 
+ * @author DynaDocs Team
+ * @version 1.0
+ * @since 2025-12-03
  * @see com.example.dinadocs.services.PdfGenerationService
  */
 @Data

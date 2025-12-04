@@ -30,6 +30,13 @@ public class DataInitializer implements CommandLineRunner {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    /**
+     * Constructor para inyección de dependencias.
+     * 
+     * @param templateRepository repositorio de plantillas
+     * @param userRepository repositorio de usuarios
+     * @param passwordEncoder encoder de contraseñas BCrypt
+     */
     public DataInitializer(TemplateRepository templateRepository, UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.templateRepository = templateRepository;
         this.userRepository = userRepository;

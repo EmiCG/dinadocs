@@ -6,11 +6,26 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Servicio dedicado a manejar la lista de tokens invalidados.
+ * Servicio para gestionar la lista negra (blacklist) de tokens JWT invalidados.
+ * Cuando un usuario cierra sesión, su token se agrega aquí para prevenir
+ * su reutilización hasta que expire naturalmente.
+ * 
+ * <p><b>Nota de implementación:</b> Esta implementación usa un HashSet en memoria,
+ * por lo que la blacklist se perderá al reiniciar la aplicación. Para producción,
+ * considerar usar Redis, base de datos o un sistema de caché distribuido.
+ * 
+ * @author DynaDocs Team
+ * @version 1.0
+ * @since 2025-12-03
+ * @see AuthService#logout(String)
  */
 @Service
 public class TokenBlacklistService {
 
+    /**
+     * Set que almacena los tokens JWT invalidados en memoria.
+     * <b>ADVERTENCIA:</b> Se pierde al reiniciar la aplicación.
+     */
     private final Set<String> invalidatedTokens = new HashSet<>();
 
     /**

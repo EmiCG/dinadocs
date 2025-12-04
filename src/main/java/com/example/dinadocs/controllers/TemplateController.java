@@ -27,6 +27,9 @@ public class TemplateController {
      * Endpoint para crear una nueva plantilla.
      * POST /api/templates
      *
+     * @param template los datos de la plantilla a crear
+     * @param authUser usuario autenticado inyectado por Spring Security
+     * @return ResponseEntity con la plantilla creada y código HTTP 201
      */
     @PostMapping
     public ResponseEntity<Template> createTemplate(@RequestBody Template template,
@@ -39,6 +42,8 @@ public class TemplateController {
      * Endpoint para listar plantillas (filtradas por rol).
      * GET /api/templates
      *
+     * @param authUser usuario autenticado inyectado por Spring Security
+     * @return ResponseEntity con lista de plantillas accesibles
      */
     @GetMapping
     public ResponseEntity<List<Template>> getAllTemplates(@AuthenticationPrincipal User authUser) {
@@ -50,6 +55,9 @@ public class TemplateController {
      * Endpoint para obtener una plantilla específica por ID.
      * GET /api/templates/{id}
      *
+     * @param id identificador único de la plantilla
+     * @param authUser usuario autenticado inyectado por Spring Security
+     * @return ResponseEntity con la plantilla o mensaje de error
      */
     @GetMapping("/{id}")
     public ResponseEntity<?> getTemplateById(@PathVariable Long id,
@@ -68,6 +76,10 @@ public class TemplateController {
      * Endpoint para actualizar una plantilla existente.
      * PUT /api/templates/{id}
      *
+     * @param id identificador único de la plantilla a actualizar
+     * @param templateDetails datos actualizados de la plantilla
+     * @param authUser usuario autenticado inyectado por Spring Security
+     * @return ResponseEntity con la plantilla actualizada o mensaje de error
      */
     @PutMapping("/{id}")
     public ResponseEntity<?> updateTemplate(@PathVariable Long id,
@@ -87,6 +99,9 @@ public class TemplateController {
      * Endpoint para eliminar una plantilla.
      * DELETE /api/templates/{id}
      *
+     * @param id identificador único de la plantilla a eliminar
+     * @param authUser usuario autenticado inyectado por Spring Security
+     * @return ResponseEntity con código HTTP 204 (No Content) o mensaje de error
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteTemplate(@PathVariable Long id,

@@ -27,6 +27,11 @@ public class PdfController {
 
     private final PdfGenerationService pdfService;
 
+    /**
+     * Constructor para inyección de dependencias.
+     * 
+     * @param pdfService servicio de generación de PDFs
+     */
     public PdfController(PdfGenerationService pdfService) {
         this.pdfService = pdfService;
     }
@@ -36,7 +41,7 @@ public class PdfController {
      * Recibe JSON, delega la lógica al servicio y devuelve el archivo binario.
      *
      * @param request El DTO (GenerationRequest) mapeado desde el JSON del body.
-     * @return ResponseEntity<byte[]> (El PDF) o un ResponseEntity de error.
+     * @return ResponseEntity con byte[] (El PDF) o un ResponseEntity de error.
      */
     @PostMapping("/generatePDF")
     public ResponseEntity<?> generateDocument(@RequestBody GenerationRequest request) {
