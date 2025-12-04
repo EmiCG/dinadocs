@@ -118,7 +118,7 @@ public class DataInitializer implements CommandLineRunner {
         if (userRepository.findByEmail("creator2@gmail.com").isEmpty()) {
             User creator = new User();
             creator.setName("Creador");
-            creator.setEmail("creator@gmail.com");
+            creator.setEmail("creator2@gmail.com");
             creator.setPassword(passwordEncoder.encode("creator123"));
             creator.setRole(Role.CREADOR);
             userRepository.save(creator);
@@ -128,7 +128,7 @@ public class DataInitializer implements CommandLineRunner {
         if (userRepository.findByEmail("creator3@gmail.com").isEmpty()) {
             User creator = new User();
             creator.setName("Creador");
-            creator.setEmail("creator@gmail.com");
+            creator.setEmail("creator3@gmail.com");
             creator.setPassword(passwordEncoder.encode("creator123"));
             creator.setRole(Role.CREADOR);
             userRepository.save(creator);
