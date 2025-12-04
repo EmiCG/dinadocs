@@ -1,0 +1,111 @@
+<html lang="es"><head>
+    <meta charset="UTF-8">
+    <title>Orden de Compra</title>
+    <style type="text/css">
+        @page { size: A4; margin: 0; }
+        body { margin: 0; padding: 15mm; font-family: Helvetica, Arial, sans-serif; font-size: 10pt; }
+
+        /* Estructura Header */
+        table.header { width: 100%; margin-bottom: 20px; }
+        td.logo { width: 50%; vertical-align: top; }
+        td.title-block { width: 50%; text-align: right; vertical-align: top; }
+
+        h1 { font-size: 20pt; margin: 0; color: #333; }
+        .po-number { font-size: 12pt; color: #666; font-weight: bold; margin-top: 5px; }
+
+        /* Bloques de Info (Proveedor / Enviar A) */
+        table.addresses { width: 100%; margin-bottom: 20px; border-spacing: 0; }
+        td.addr-col { width: 48%; vertical-align: top; border: 1px solid #ccc; padding: 10px; background-color: #f9f9f9; }
+        td.addr-spacer { width: 4%; }
+        
+        .addr-title { font-weight: bold; font-size: 11pt; margin-bottom: 5px; border-bottom: 1px solid #ddd; padding-bottom: 3px; display: block;}
+
+        /* Tabla Items */
+        table.items { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        th { background: #333; color: #fff; padding: 8px; text-align: left; font-size: 9pt; }
+        td.item-cell { border-bottom: 1px solid #ddd; padding: 8px; font-size: 9pt; }
+        
+        .totals { text-align: right; margin-top: 10px; }
+        .total-row { font-size: 11pt; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <table class="header">
+        <tbody><tr>
+            <td class="logo">
+                <img src="{{url_logo_empresa}}" style="width: 150px; display: block;" alt="Logo">
+                <div><strong>{{nombre_mi_empresa}}</strong></div>
+            </td>
+            <td class="title-block">
+                <h1>ORDEN DE COMPRA</h1>
+                <div class="po-number"># {{numero_orden}}</div>
+                <div>Fecha: {{fecha_orden}}</div>
+            </td>
+        </tr>
+    </tbody></table>
+
+    <table class="addresses">
+        <tbody><tr>
+            <td class="addr-col">
+                <span class="addr-title">PROVEEDOR</span>
+                <strong>{{nombre_proveedor}}</strong><br>
+                {{direccion_proveedor}}<br>
+                Tel: {{telefono_proveedor}}<br>
+                Attn: {{contacto_proveedor}}
+            </td>
+            <td class="addr-spacer"></td>
+            <td class="addr-col">
+                <span class="addr-title">ENVIAR A</span>
+                <strong>{{nombre_receptor}}</strong><br>
+                {{direccion_envio}}<br>
+                {{ciudad_estado_envio}}
+            </td>
+        </tr>
+    </tbody></table>
+
+    
+            {{#items}}
+            
+            {{/items}}
+        <table class="items">
+        <thead>
+            <tr>
+                <th style="width: 10%;">CANT</th>
+                <th style="width: 15%;">CÓDIGO</th>
+                <th style="width: 45%;">DESCRIPCIÓN</th>
+                <th style="width: 15%; text-align: right;">UNITARIO</th>
+                <th style="width: 15%; text-align: right;">TOTAL</th>
+            </tr>
+        </thead>
+        <tbody><tr>
+                <td class="item-cell" style="text-align: center;">{{cantidad}}</td>
+                <td class="item-cell">{{sku}}</td>
+                <td class="item-cell">{{descripcion}}</td>
+                <td class="item-cell" style="text-align: right;">{{precio_unitario}}</td>
+                <td class="item-cell" style="text-align: right;">{{total_linea}}</td>
+            </tr></tbody>
+    </table>
+
+    <div class="totals">
+        <table style="float: right; width: 40%;">
+            <tbody><tr>
+                <td style="text-align: right; padding: 3px;">Subtotal:</td>
+                <td style="text-align: right; padding: 3px;">$ {{subtotal}}</td>
+            </tr>
+            <tr>
+                <td style="text-align: right; padding: 3px;">Impuestos:</td>
+                <td style="text-align: right; padding: 3px;">$ {{impuestos}}</td>
+            </tr>
+            <tr class="total-row">
+                <td style="text-align: right; padding: 3px; border-top: 2px solid #333;">TOTAL:</td>
+                <td style="text-align: right; padding: 3px; border-top: 2px solid #333;">$ {{total_final}}</td>
+            </tr>
+        </tbody></table>
+    </div>
+    
+    <div style="clear: both; margin-top: 40px; padding-top: 20px; border-top: 1px dotted #ccc;">
+        <strong>Condiciones / Notas:</strong><br>
+        {{notas_adicionales}}
+    </div>
+
+</body></html>

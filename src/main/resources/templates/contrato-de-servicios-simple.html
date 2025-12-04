@@ -1,0 +1,212 @@
+<html lang="es"><head>
+    <meta charset="UTF-8">
+    <title>Contrato de Servicios Profesional</title>
+    <style type="text/css">
+        /* --- Configuración de Página para Flying Saucer --- */
+        @page {
+            size: A4;
+            margin-top: 30mm;    /* Margen superior más amplio para el header */
+            margin-bottom: 25mm; /* Margen inferior para el pie de página */
+            margin-left: 25mm;
+            margin-right: 25mm;
+
+            /* Pie de Página Automático */
+            @bottom-center {
+                content: "Página " counter(page) " de " counter(pages);
+                font-family: 'Times New Roman', serif;
+                font-size: 10pt;
+                color: #555;
+            }
+        }
+
+        /* --- Estilos Generales --- */
+        body {
+            font-family: 'Times New Roman', serif; /* Fuente clásica y elegante */
+            font-size: 12pt;
+            line-height: 1.5; /* Interlineado cómodo para leer */
+            text-align: justify; /* Texto justificado para un look formal */
+            color: #000;
+        }
+
+        /* --- Encabezado (Logo y Título) --- */
+        /* Usamos una tabla para poner el logo y el título en la misma línea */
+        table.header-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #333; /* Línea separadora elegante */
+            padding-bottom: 15px;
+        }
+        td.header-logo {
+            width: 30%;
+            vertical-align: middle;
+        }
+        td.header-title {
+            width: 70%;
+            text-align: right;
+            vertical-align: middle;
+        }
+        /* Estilo para la imagen del logo */
+        img.contract-logo {
+            width: 150px; /* Ancho fijo para que no rompa */
+            height: auto;
+            display: block;
+        }
+        h1.doc-title {
+            font-size: 18pt;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin: 0;
+            color: #333;
+        }
+
+        /* --- Párrafos y Cláusulas --- */
+        p {
+            margin-top: 0;
+            margin-bottom: 15px; /* Espacio entre párrafos */
+        }
+
+        /* Estilo para los datos variables en negrita */
+        .variable-data {
+            font-weight: bold;
+        }
+
+        /* Títulos de las Cláusulas */
+        h3.clause-title {
+            font-size: 13pt;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ccc; /* Línea sutil debajo de cada título */
+            padding-bottom: 5px;
+        }
+
+        /* Sangría para el texto de las cláusulas */
+        .clause-content {
+            margin-left: 20px;
+        }
+
+        /* --- Sección de Firmas --- */
+        table.signatures-table {
+            width: 100%;
+            margin-top: 60px; /* Espacio generoso antes de las firmas */
+            border-collapse: collapse;
+            page-break-inside: avoid; /* Evita que las firmas se separen en dos hojas */
+        }
+        td.sig-block {
+            width: 45%;
+            text-align: center;
+            vertical-align: top;
+        }
+        td.sig-spacer {
+            width: 10%;
+        }
+        .sig-line {
+            border-top: 1px solid #000;
+            width: 80%;
+            margin: 0 auto 10px auto; /* Centrado y con margen abajo */
+            padding-top: 10px;
+        }
+        .sig-role {
+            font-weight: bold;
+            font-size: 11pt;
+            text-transform: uppercase;
+        }
+        .sig-name {
+            font-size: 11pt;
+        }
+
+    </style>
+</head>
+<body>
+
+    <table class="header-table">
+        <tbody><tr>
+            <td class="header-logo">
+                &nbsp; </td>
+            <td class="header-title">
+                <h1 class="doc-title">CONTRATO DE PRESTACIÓN DE SERVICIOS</h1>
+            </td>
+        </tr>
+    </tbody></table>
+
+    <p>
+        En la ciudad de <span class="variable-data">{{ciudad_firma}}</span>, a los <span class="variable-data">{{dia}}</span> días del mes de <span class="variable-data">{{mes}}</span> de <span class="variable-data">{{anio}}</span>, comparecen para la celebración del presente contrato:
+    </p>
+
+    <p>
+        Por una parte, <span class="variable-data">{{nombre_prestador}}</span>, con domicilio fiscal ubicado en <span class="variable-data">{{domicilio_prestador}}</span>, a quien en lo sucesivo se le denominará <strong>"EL PRESTADOR"</strong>.
+    </p>
+
+    <p>
+        Y por la otra parte, <span class="variable-data">{{nombre_cliente}}</span>, con domicilio en <span class="variable-data">{{domicilio_cliente}}</span>, a quien en lo sucesivo se le denominará <strong>"EL CLIENTE"</strong>.
+    </p>
+
+    <p>
+        Ambas partes se reconocen mutuamente la capacidad legal necesaria para obligarse y manifiestan su voluntad de celebrar el presente contrato al tenor de las siguientes:
+    </p>
+
+    <h3>CLÁUSULAS</h3>
+
+    <h3 class="clause-title">PRIMERA: OBJETO DEL CONTRATO.</h3>
+    <div class="clause-content">
+        <p>
+            "EL PRESTADOR" se obliga a prestar a "EL CLIENTE" sus servicios profesionales consistentes en: <strong>{{descripcion_servicio}}</strong>, de acuerdo con las especificaciones técnicas y alcances detallados en el anexo adjunto al presente instrumento.
+        </p>
+    </div>
+
+    <h3 class="clause-title">SEGUNDA: VIGENCIA.</h3>
+    <div class="clause-content">
+        <p>
+            La vigencia del presente contrato iniciará el día <span class="variable-data">{{fecha_inicio}}</span> y concluirá el día <span class="variable-data">{{fecha_fin}}</span>. Dicha vigencia podrá ser prorrogada por acuerdo mutuo y por escrito de ambas partes.
+        </p>
+    </div>
+
+    <h3 class="clause-title">TERCERA: HONORARIOS Y FORMA DE PAGO.</h3>
+    <div class="clause-content">
+        <p>
+            Como contraprestación por los servicios objeto de este contrato, "EL CLIENTE" se obliga a pagar a "EL PRESTADOR" la cantidad total de <strong>$ {{monto_total}} ({{monto_total_letras}})</strong>.
+        </p>
+        <p>
+            El pago se realizará mediante <span class="variable-data">{{forma_pago}}</span>, dentro de los <span class="variable-data">{{dias_credito}}</span> días naturales siguientes a la fecha de recepción de la factura fiscal correspondiente que cumpla con los requisitos legales.
+        </p>
+    </div>
+    
+    <h3 class="clause-title">CUARTA: CONFIDENCIALIDAD.</h3>
+    <div class="clause-content">
+        <p>
+            Ambas partes acuerdan mantener en estricta confidencialidad toda la información técnica, financiera, comercial y operativa a la que tengan acceso con motivo de la ejecución del presente contrato, y se obligan a no divulgarla a terceros sin el consentimiento previo y por escrito de la otra parte, salvo requerimiento de autoridad competente.
+        </p>
+    </div>
+
+    <h3 class="clause-title">QUINTA: JURISDICCIÓN.</h3>
+    <div class="clause-content">
+        <p>
+            Para la interpretación y cumplimiento del presente contrato, las partes se someten expresamente a las leyes y tribunales competentes de la ciudad de <span class="variable-data">{{ciudad_jurisdiccion}}</span>, renunciando a cualquier otro fuero que pudiera corresponderles por razón de sus domicilios presentes o futuros.
+        </p>
+    </div>
+
+    <br>
+    <p>
+        Leído que fue el presente contrato por las partes y enteradas de su contenido y alcance legal, lo firman por duplicado en el lugar y fecha señalados al inicio.
+    </p>
+
+    <table class="signatures-table">
+        <tbody><tr>
+            <td class="sig-block">
+                <div class="sig-line"></div>
+                <div class="sig-role">POR "EL PRESTADOR"</div>
+                <div class="sig-name">{{nombre_prestador}}</div>
+            </td>
+            <td class="sig-spacer">&nbsp;</td>
+            <td class="sig-block">
+                <div class="sig-line"></div>
+                <div class="sig-role">POR "EL CLIENTE"</div>
+                <div class="sig-name">{{nombre_cliente}}</div>
+            </td>
+        </tr>
+    </tbody></table>
+
+
+</body></html>

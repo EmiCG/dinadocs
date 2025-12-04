@@ -1,0 +1,114 @@
+<html lang="es"><head>
+    <meta charset="UTF-8">
+    <title>Certificado</title>
+    <style type="text/css">
+        @page {
+            size: A4 landscape; /* IMPORTANTE: Hoja horizontal */
+            margin: 0;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Times New Roman', serif; /* Fuente clásica para diplomas */
+            background-color: #fff;
+        }
+
+        /* Contenedor principal para márgenes seguros */
+        .certificate-container {
+            width: 297mm; /* Ancho A4 Horizontal */
+            height: 210mm; /* Alto A4 Horizontal */
+            padding: 15mm;
+            box-sizing: border-box; /* No soportado en todas las versiones de FS, pero ayuda */
+        }
+
+        /* Borde Ornamental (Doble borde) */
+        .border-frame {
+            width: 100%;
+            height: 100%; /* Ocupa todo el contenedor */
+            border: 5px double #000; /* Borde doble elegante */
+            padding: 10mm;
+            text-align: center;
+        }
+
+        /* Textos */
+        h1.main-title {
+            font-size: 40pt;
+            text-transform: uppercase;
+            margin-top: 20mm;
+            margin-bottom: 5mm;
+            letter-spacing: 2px;
+        }
+
+        .subtitle { font-size: 14pt; color: #555; margin-bottom: 15mm; }
+        .present-text { font-size: 18pt; margin-bottom: 5mm; font-style: italic; }
+        
+        .recipient-name {
+            font-size: 36pt;
+            font-weight: bold;
+            border-bottom: 2px solid #000;
+            display: inline-block;
+            padding-bottom: 2mm;
+            margin-bottom: 10mm;
+            min-width: 500px; /* Para que la línea sea larga aunque el nombre sea corto */
+        }
+
+        .description { font-size: 16pt; line-height: 1.5; margin-bottom: 20mm; padding: 0 20mm; }
+
+        /* Firmas (Tabla para alinear) */
+        table.signatures {
+            width: 100%;
+            margin-top: 10mm;
+            border: none;
+        }
+        td.sig-block { text-align: center; vertical-align: top; width: 40%; }
+        td.spacer { width: 20%; }
+        
+        .sig-line {
+            border-top: 1px solid #000;
+            width: 80%;
+            margin: 0 auto;
+            padding-top: 5px;
+            font-weight: bold;
+            font-size: 12pt;
+        }
+        .sig-role { font-size: 10pt; color: #555; }
+
+    </style>
+</head>
+<body>
+    <div class="certificate-container">
+        <div class="border-frame">
+            <h1 class="main-title">Certificado de Reconocimiento</h1>
+            <div class="subtitle">OTORGADO A</div>
+
+            <div class="recipient-name">{{nombre_participante}}</div>
+
+            <div class="description">
+                Por haber completado satisfactoriamente el curso de<br>
+                <strong>{{nombre_curso}}</strong><br>
+                con una duración de {{duracion_horas}} horas.
+            </div>
+
+            <div class="present-text">
+                Dado el {{fecha_emision}}
+            </div>
+
+            <table class="signatures">
+                <tbody><tr>
+                    <td class="sig-block">
+                        <div style="height: 40px;"></div> 
+                        <div class="sig-line">{{nombre_instructor}}</div>
+                        <div class="sig-role">Instructor</div>
+                    </td>
+                    <td class="spacer"></td>
+                    <td class="sig-block">
+                        <div style="height: 40px;"></div>
+                        <div class="sig-line">{{nombre_director}}</div>
+                        <div class="sig-role">Director Académico</div>
+                    </td>
+                </tr>
+            </tbody></table>
+        </div>
+    </div>
+
+</body></html>
