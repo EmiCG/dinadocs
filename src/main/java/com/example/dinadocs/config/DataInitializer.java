@@ -12,10 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * "Seeder" de la Base de Datos.
@@ -29,6 +26,7 @@ public class DataInitializer implements CommandLineRunner {
     private final TemplateRepository templateRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final com.example.dinadocs.services.TemplateProcessor templateProcessor;
 
     /**
      * Constructor para inyección de dependencias.
@@ -36,11 +34,13 @@ public class DataInitializer implements CommandLineRunner {
      * @param templateRepository repositorio de plantillas
      * @param userRepository repositorio de usuarios
      * @param passwordEncoder encoder de contraseñas BCrypt
+     * @param templateProcessor procesador de plantillas para extraer placeholders
      */
-    public DataInitializer(TemplateRepository templateRepository, UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public DataInitializer(TemplateRepository templateRepository, UserRepository userRepository, PasswordEncoder passwordEncoder, com.example.dinadocs.services.TemplateProcessor templateProcessor) {
         this.templateRepository = templateRepository;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.templateProcessor = templateProcessor;
     }
 
     /**
@@ -67,7 +67,7 @@ public class DataInitializer implements CommandLineRunner {
                 User owner = userRepository.findById(2L).orElseThrow(() -> new RuntimeException("Usuario creador no encontrado"));
                 newTemplate.setOwner(owner);
 
-                List<String> placeholders = extractPlaceholders(content);
+                List<String> placeholders = templateProcessor.extractPlaceholders(content);
                 newTemplate.setPlaceholders(placeholders);
 
                 templateRepository.save(newTemplate);
@@ -76,20 +76,6 @@ public class DataInitializer implements CommandLineRunner {
                 System.err.println("ERROR: No se pudo cargar la plantilla '" + filename + "': " + e.getMessage());
             }
         }
-    }
-
-    /**
-     * Método privado que usa Regex para encontrar todos los placeholders.
-     */
-    private List<String> extractPlaceholders(String htmlContent) {
-        List<String> matches = new ArrayList<>();
-        Pattern pattern = Pattern.compile("\\{\\{([^\\}]+)\\}\\}");
-        Matcher matcher = pattern.matcher(htmlContent);
-
-        while (matcher.find()) {
-            matches.add(matcher.group(1));
-        }
-        return matches;
     }
 
     /**

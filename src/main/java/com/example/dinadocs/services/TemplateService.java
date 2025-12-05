@@ -7,13 +7,10 @@ import com.example.dinadocs.repositories.TemplateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.nio.file.AccessDeniedException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Servicio (Lógica de Negocio) para gestionar las Plantillas.
@@ -25,6 +22,9 @@ public class TemplateService {
 
     @Autowired
     private TemplateRepository templateRepository;
+
+    @Autowired
+    private TemplateProcessor templateProcessor;
 
     /**
      * Guarda una plantilla, aplicando lógica de roles.
@@ -42,7 +42,7 @@ public class TemplateService {
         }
         template.setOwner(authUser);
 
-        List<String> placeholders = extractPlaceholders(template.getContent());
+        List<String> placeholders = templateProcessor.extractPlaceholders(template.getContent());
         template.setPlaceholders(placeholders);
         return templateRepository.save(template);
     }
@@ -159,25 +159,6 @@ public class TemplateService {
         System.out.println("Permisos verificados. Eliminando plantilla...");
         templateRepository.delete(template);
         System.out.println("Plantilla eliminada exitosamente.");
-    }
-
-    /**
-     * Método privado que usa Regex para encontrar todos los {{placeholders}}.
-     */
-    private List<String> extractPlaceholders(String htmlContent) {
-        List<String> matches = new ArrayList<>();
-
-        if (htmlContent == null || htmlContent.isEmpty()) {
-            return matches;
-        }
-
-        Pattern pattern = Pattern.compile("\\{\\{([^\\}]+)\\}\\}");
-        Matcher matcher = pattern.matcher(htmlContent);
-
-        while (matcher.find()) {
-            matches.add(matcher.group(1));
-        }
-        return matches;
     }
 
     /**

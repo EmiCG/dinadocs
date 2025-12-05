@@ -4,6 +4,7 @@ import com.example.dinadocs.models.Role;
 import com.example.dinadocs.models.Template;
 import com.example.dinadocs.models.User;
 import com.example.dinadocs.repositories.TemplateRepository;
+import com.example.dinadocs.services.TemplateProcessor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.example.dinadocs.services.TemplateService;
 
 import java.nio.file.AccessDeniedException;
+import java.util.Arrays;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -28,6 +30,9 @@ class TemplateServiceTest {
 
     @Mock
     private TemplateRepository templateRepository;
+
+    @Mock
+    private TemplateProcessor templateProcessor;
 
     @InjectMocks
     private TemplateService templateService;
@@ -75,7 +80,10 @@ class TemplateServiceTest {
     void testSave_WhenUserIsUsuario_ShouldBePrivate() {
         Template newTemplate = new Template();
         newTemplate.setName("Plantilla de Usuario");
+        newTemplate.setContent("<html>{{nombre}}</html>");
 
+        // Simula la extracción de placeholders
+        when(templateProcessor.extractPlaceholders(anyString())).thenReturn(Arrays.asList("nombre"));
         // Simula la acción de guardado
         when(templateRepository.save(any(Template.class))).thenReturn(newTemplate);
 
@@ -95,7 +103,9 @@ class TemplateServiceTest {
     void testSave_WhenUserIsCreator_ShouldBePublic() {
         Template newTemplate = new Template();
         newTemplate.setName("Plantilla de Creador");
+        newTemplate.setContent("<html>{{titulo}}</html>");
 
+        when(templateProcessor.extractPlaceholders(anyString())).thenReturn(Arrays.asList("titulo"));
         when(templateRepository.save(any(Template.class))).thenReturn(newTemplate);
 
         Template savedTemplate = templateService.save(newTemplate, creatorUser);

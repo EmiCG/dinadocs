@@ -27,6 +27,9 @@ class TemplateServiceTest {
     @Mock
     private TemplateRepository templateRepository;
 
+    @Mock
+    private TemplateProcessor templateProcessor;
+
     @InjectMocks
     private TemplateService templateService;
 
@@ -75,6 +78,7 @@ class TemplateServiceTest {
         newTemplate.setName("Plantilla de Usuario");
         newTemplate.setContent("<html>{{datos}}</html>");
 
+        when(templateProcessor.extractPlaceholders(anyString())).thenReturn(Arrays.asList("datos"));
         when(templateRepository.save(any(Template.class))).thenReturn(newTemplate);
 
         Template savedTemplate = templateService.save(newTemplate, standardUser);
@@ -91,6 +95,7 @@ class TemplateServiceTest {
         newTemplate.setName("Plantilla de Creador");
         newTemplate.setContent("<html>{{info}}</html>");
 
+        when(templateProcessor.extractPlaceholders(anyString())).thenReturn(Arrays.asList("info"));
         when(templateRepository.save(any(Template.class))).thenReturn(newTemplate);
 
         Template savedTemplate = templateService.save(newTemplate, creatorUser);
@@ -106,6 +111,7 @@ class TemplateServiceTest {
         newTemplate.setName("Plantilla con Múltiples Marcadores");
         newTemplate.setContent("<html>{{nombre}} {{email}} {{edad}}</html>");
 
+        when(templateProcessor.extractPlaceholders(anyString())).thenReturn(Arrays.asList("nombre", "email", "edad"));
         when(templateRepository.save(any(Template.class))).thenReturn(newTemplate);
 
         Template savedTemplate = templateService.save(newTemplate, standardUser);
